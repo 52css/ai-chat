@@ -5,7 +5,7 @@ const {height} = useVisualViewport({
     height: 0,
     tapSelector: '.input', // 可点击区域
     yScrollSelector: '.message', // 纵向滚动条
-    // xScrollSelector: '.chat-opywriting' // 横向滚动条
+    xScrollSelector: '.tip' // 横向滚动条
 })
 
 const messageList = ref([
@@ -13,9 +13,16 @@ const messageList = ref([
     type: 'system',
     content: '你好，我是小助手，有什么可以帮到你的吗？'
   },
+  // {
+  //   type: 'user',
+  //   content: '哈哈哈哈哈'
+  // },
+])
+
+const tipList = ref([
   {
-    type: 'user',
-    content: '哈哈哈哈哈'
+    type: 'system',
+    content: '讲个笑话'
   },
 ])
 
@@ -26,7 +33,6 @@ const messageList = ref([
     <view class="girl"></view>
     <view :style="{height: height + 'px'}"/>
     <scroll-view class="message" scroll-y>
-      {{ height }}
       <view class="message__list">
         <view v-for="(msg) in messageList" class="message__item" :data-type="msg.type">
           <div class="message__content">
@@ -35,7 +41,16 @@ const messageList = ref([
         </view>
       </view>
     </scroll-view>
-    <input class="input" placeholder="有困难？试着问问我吧!" />
+    <scroll-view class="tip" scroll-x>
+      <view class="tip__list">
+        <view v-for="(tip) in tipList" class="tip__item">
+          <div class="tip__content">
+            {{ tip.content }}
+          </div>
+        </view>
+      </view>
+    </scroll-view>
+    <input class="input" placeholder="来和晓晓聊聊天吧" placeholder-class="placeholder"/>
   </view>
 </template>
 
@@ -49,9 +64,6 @@ uni-page-body {
   display: flex;
   flex-direction: column;
   background: linear-gradient(#2A104F, #54185E);
-  /* background: url('/static/bg.png'); */
-  /* background-repeat: no-repeat; */
-  /* background-size: cover; */
 }
 .message {
   flex: 1;
@@ -65,7 +77,6 @@ uni-page-body {
   padding: 40rpx;
   display: flex;
   flex-direction: column;
-  /* justify-content: flex-end; */
   margin: 0 0 0 auto;
 }
 .message__item {
@@ -93,17 +104,23 @@ uni-page-body {
   border-radius: 40rpx 40rpx 8rpx 40rpx;
   color: #FFFFFF;
 }
-/* .input {
-  height: 100rpx;
-  background: linear-gradient(129deg, #DB9E52 0%, #EAC38F 100%);
-  border-radius: 50rpx;
-  opacity: 0.5;
-  border: 1rpx solid #FFFFFF;
-  margin: 0 40rpx 40rpx;
+
+.tip {
+
+}
+.tip__list {
   padding: 0 40rpx;
-  font-size: 32rpx;
-  color: #955709;
-} */
+  margin-bottom: 20rpx;
+  display: flex;
+  gap: 20rpx;
+}
+.tip__item {
+  background-color: #352B5A;
+  padding: 16rpx 30rpx;
+  color: #fff;
+  border-radius: 40rpx;
+}
+
 .input {
   position: relative;
   height: 100rpx;
@@ -123,5 +140,13 @@ uni-page-body {
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
+}
+.placeholder {
+  background-image: linear-gradient(to right, #5BA8D2, #B877E8, #FE82AF);
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: 30rpx;
+  font-weight: 600;
+  width: 327rpx;
 }
 </style>
