@@ -66,7 +66,7 @@ uni-page-body {
   background: linear-gradient(#2A104F, #54185E);
 }
 .girl {
-  background: url(/static/char.png) bottom center no-repeat;
+  background: url(./char.png) bottom center no-repeat;
   width: 285rpx;
   position: absolute;
   left: 0;
