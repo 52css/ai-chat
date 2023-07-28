@@ -93,7 +93,7 @@ uni-page-body {
   border-radius: 40rpx 40rpx 8rpx 40rpx;
   color: #FFFFFF;
 }
-.input {
+/* .input {
   height: 100rpx;
   background: linear-gradient(129deg, #DB9E52 0%, #EAC38F 100%);
   border-radius: 50rpx;
@@ -103,5 +103,25 @@ uni-page-body {
   padding: 0 40rpx;
   font-size: 32rpx;
   color: #955709;
+} */
+.input {
+  position: relative;
+  height: 100rpx;
+  margin: 0 40rpx 40rpx;
+  padding: 0 40rpx;
+  border-radius: 50rpx;
+  background: linear-gradient(45deg, #16355ac8 0%, #52254b9a 100%);
+  color: #fff;
+}
+.input::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50rpx;
+  padding: 6rpx;
+  background:linear-gradient(45deg,#5BA8D2,#FE82AF);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
 }
 </style>
