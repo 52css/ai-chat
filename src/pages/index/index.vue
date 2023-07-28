@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, getCurrentInstance, nextTick } from 'vue'
+import Api2d from 'api2d';
 import useVisualViewport from '@/utils/use-visual-viewport'
 const {height} = useVisualViewport({
     height: 0,
@@ -13,10 +14,10 @@ const messageList = ref([
     type: 'system',
     content: '你好，我是小助手，有什么可以帮到你的吗？'
   },
-  {
-    type: 'user',
-    content: '你好'
-  },
+  // {
+  //   type: 'user',
+  //   content: '你好'
+  // },
 ])
 
 const tipList = ref([
@@ -24,14 +25,70 @@ const tipList = ref([
     type: 'system',
     content: '讲个笑话'
   },
+  {
+    type: 'system',
+    content: '音乐推荐'
+  },
 ])
+const loading = ref(false)
+const instance = getCurrentInstance()
+const scrollTop = ref(0)
+const scrollToBottom = () => {
+  const query = uni.createSelectorQuery().in(instance);
+  let nodesRef = query.select('.message__list');
+  nodesRef
+    .boundingClientRect((res: any) => {
+      nextTick(() => {
+        //进入页面滚动到底部
+        scrollTop.value = res.height + 100;
+      });
+    })
+    .exec();
+}
+const api = new Api2d('fk211166-MyLi1GKk3wYQoIMlsN3KMMmqtvr19HZW', 'https://openai.api2d.net/');
+const handleChat = async (content: string) => {
+  if (loading.value) return
+  loading.value = true
+  console.log('开始聊天', content)
+  messageList.value.push({
+    type: 'user',
+    content,
+  })
+  messageList.value.push({
+    type: 'system',
+    content: '...',
+  })
+  const ret = await api.completion({
+    model: 'gpt-3.5-turbo',
+    messages: [
+      {
+        role: 'user',
+        content,
+      },
+    ],
+    stream: true, // Supports streaming, note that when stream is true, the return value is undefined
+    onMessage: (string) => {
+      // console.log('SSE returned, the complete string received is:', string);
+      messageList.value[messageList.value.length - 1].content = string + '...';
+      scrollToBottom()
+    },
+    onEnd: (string) => {
+      // console.log('end', string);
+      messageList.value[messageList.value.length - 1].content = string;
+      scrollToBottom()
+      loading.value = false
+    },
+  });
+
+  console.log('ret', ret);
+}
 
 </script>
 
 <template>
-  <view class="container" :style="{'--margin-top': '0px'}">
+  <view class="container" :style="{'--margin-top': height + 'px'}">
     <view class="girl"></view>
-    <scroll-view class="message" scroll-y>
+    <scroll-view class="message" scroll-y scroll-with-animation :scroll-top="scrollTop">
       <view class="message__list">
         <view v-for="(msg) in messageList" class="message__item" :data-type="msg.type">
           <div class="message__content">
@@ -42,14 +99,14 @@ const tipList = ref([
     </scroll-view>
     <scroll-view class="tip" scroll-x>
       <view class="tip__list">
-        <view v-for="(tip) in tipList" class="tip__item">
+        <view v-for="(tip, tipIndex) in tipList" :key="tipIndex" class="tip__item" @tap="handleChat(tip.content)">
           <div class="tip__content">
             {{ tip.content }}
           </div>
         </view>
       </view>
     </scroll-view>
-    <input class="input" placeholder="来和晓晓聊聊天吧" placeholder-class="placeholder"/>
+    <input class="input" :disabled="loading" placeholder="来和晓晓聊聊天吧" placeholder-class="placeholder"/>
   </view>
 </template>
 
@@ -83,7 +140,7 @@ uni-page-body {
 }
 .message__list {
   width: 460rpx;
-  padding: 40rpx;
+  padding: 40rpx 40rpx 0;
   display: flex;
   flex-direction: column;
   margin: 0 0 0 auto;
@@ -100,16 +157,17 @@ uni-page-body {
   max-width: 460rpx;
   font-size: 28rpx;
   color: #333333;
+  white-space: break-spaces;
 }
 .message__item[data-type="system"] .message__content {
-  background: #403474;
+  background: #403474d6;
   color: #fff;
 }
 .message__item[data-type="user"] {
   justify-content: end;
 }
 .message__item[data-type="user"] .message__content {
-  background: #4A5ED4;
+  background: #4a5fd4c4;
   border-radius: 40rpx 40rpx 8rpx 40rpx;
   color: #FFFFFF;
 }
@@ -119,7 +177,7 @@ uni-page-body {
 }
 .tip__list {
   padding: 0 40rpx;
-  margin-bottom: 20rpx;
+  margin: 20rpx 0;
   display: flex;
   gap: 20rpx;
 }
