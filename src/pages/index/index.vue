@@ -83,10 +83,18 @@ const handleChat = async (content: string) => {
   console.log('ret', ret);
 }
 
+const input = ref('')
+const handleConfirm = async () => {
+  if (!input.value) return
+  await handleChat(input.value)
+  input.value = ''
+}
+
 </script>
 
 <template>
-  <view class="container" :style="{'--margin-top': height + 'px'}">
+  <view class="container">
+    <view :style="{height: height + 'px'}"></view> <!-- 占位符 -->
     <view class="girl"></view>
     <scroll-view class="message" scroll-y scroll-with-animation :scroll-top="scrollTop">
       <view class="message__list">
@@ -106,7 +114,7 @@ const handleChat = async (content: string) => {
         </view>
       </view>
     </scroll-view>
-    <input class="input" :disabled="loading" placeholder="来和晓晓聊聊天吧" placeholder-class="placeholder"/>
+    <input v-model="input" @confirm="handleConfirm" class="input" :disabled="loading" placeholder="来和晓晓聊聊天吧" placeholder-class="placeholder"/>
   </view>
 </template>
 
@@ -115,12 +123,12 @@ uni-page-body {
   height: 100%;
 }
 .container {
-  margin-top: var(--margin-top);
-  height: calc(100vh - var(--margin-top));
+  height: 100%;
   position: relative;
   display: flex;
   flex-direction: column;
   background: linear-gradient(#2A104F, #54185E);
+  transition: all 0.3s;
 }
 .girl {
   background: url(./char.png) bottom center no-repeat;
