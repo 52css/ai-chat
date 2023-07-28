@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import useVisualViewport from '@/utils/use-visual-viewport'
+const {height} = useVisualViewport({
+    height: 0,
+    tapSelector: '.input', // 可点击区域
+    yScrollSelector: '.message', // 纵向滚动条
+    // xScrollSelector: '.chat-opywriting' // 横向滚动条
+})
+
 const messageList = ref([
   {
     type: 'system',
@@ -8,14 +16,17 @@ const messageList = ref([
   {
     type: 'user',
     content: '哈哈哈哈哈'
-  }
+  },
 ])
+
 </script>
 
 <template>
   <view class="container">
     <view class="girl"></view>
-    <view class="message">
+    <view :style="{height: height + 'px'}"/>
+    <scroll-view class="message" scroll-y>
+      {{ height }}
       <view class="message__list">
         <view v-for="(msg) in messageList" class="message__item" :data-type="msg.type">
           <div class="message__content">
@@ -23,7 +34,7 @@ const messageList = ref([
           </div>
         </view>
       </view>
-    </view>
+    </scroll-view>
     <input class="input" placeholder="有困难？试着问问我吧!" />
   </view>
 </template>
@@ -34,24 +45,28 @@ uni-page-body {
 }
 .container {
   height: 100%;
-  background: url('/static/bg.png');
-  background-size: contain;
   position: relative;
   display: flex;
   flex-direction: column;
+  background: linear-gradient(#2A104F, #54185E);
+  /* background: url('/static/bg.png'); */
+  /* background-repeat: no-repeat; */
+  /* background-size: cover; */
 }
 .message {
   flex: 1;
   min-height: 0;
   display: flex;
   justify-content: flex-end;
+  overflow: auto;
 }
 .message__list {
   width: 460rpx;
   padding: 40rpx;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  /* justify-content: flex-end; */
+  margin: 0 0 0 auto;
 }
 .message__item {
   margin-top: 40rpx;
@@ -67,13 +82,14 @@ uni-page-body {
   color: #333333;
 }
 .message__item[data-type="system"] .message__content {
-  background: linear-gradient(144deg, #FFFFFF 0%, #F7DCC5 100%);
+  background: #403474;
+  color: #fff;
 }
 .message__item[data-type="user"] {
   justify-content: end;
 }
 .message__item[data-type="user"] .message__content {
-  background: linear-gradient(139deg, #FFA426 0%, #F7DCC5 100%);
+  background: #4A5ED4;
   border-radius: 40rpx 40rpx 8rpx 40rpx;
   color: #FFFFFF;
 }
@@ -83,7 +99,7 @@ uni-page-body {
   border-radius: 50rpx;
   opacity: 0.5;
   border: 1rpx solid #FFFFFF;
-  margin: 0 40rpx 112rpx;
+  margin: 0 40rpx 40rpx;
   padding: 0 40rpx;
   font-size: 32rpx;
   color: #955709;
