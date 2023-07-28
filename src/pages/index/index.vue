@@ -13,10 +13,10 @@ const messageList = ref([
     type: 'system',
     content: '你好，我是小助手，有什么可以帮到你的吗？'
   },
-  // {
-  //   type: 'user',
-  //   content: '哈哈哈哈哈'
-  // },
+  {
+    type: 'user',
+    content: '你好'
+  },
 ])
 
 const tipList = ref([
@@ -29,9 +29,8 @@ const tipList = ref([
 </script>
 
 <template>
-  <view class="container">
+  <view class="container" :style="{'--margin-top': '0px'}">
     <view class="girl"></view>
-    <view :style="{height: height + 'px'}"/>
     <scroll-view class="message" scroll-y>
       <view class="message__list">
         <view v-for="(msg) in messageList" class="message__item" :data-type="msg.type">
@@ -59,11 +58,21 @@ uni-page-body {
   height: 100%;
 }
 .container {
-  height: 100%;
+  margin-top: var(--margin-top);
+  height: calc(100vh - var(--margin-top));
   position: relative;
   display: flex;
   flex-direction: column;
   background: linear-gradient(#2A104F, #54185E);
+}
+.girl {
+  background: url(/static/char.png) bottom center no-repeat;
+  width: 285rpx;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 260rpx;
+  background-size: 100%;
 }
 .message {
   flex: 1;
