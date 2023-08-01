@@ -29,6 +29,18 @@ const tipList = ref([
     type: 'system',
     content: '音乐推荐'
   },
+  {
+    type: 'system',
+    content: '来首唐诗'
+  },
+  // {
+  //   type: 'system',
+  //   content: '请给我一些类似waketime的软件，需要开源的、支持自己部署的'
+  // },
+  // {
+  //   type: 'system',
+  //   content: '假如你是李白，写一首送给赵阳的诗，表达对他的辛勤工作的赞美，七言绝句'
+  // },
 ])
 const loading = ref(false)
 const instance = getCurrentInstance()
@@ -188,6 +200,7 @@ uni-page-body {
   margin: 20rpx 0;
   display: flex;
   gap: 20rpx;
+  white-space: nowrap;
 }
 .tip__item {
   background-color: #352B5A;
